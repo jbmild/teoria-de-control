@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,24 +41,24 @@
                         <div class="statistics-details d-flex align-items-center">
                           <div>
                             <p class="statistics-title">Capital $</p>
-                            <h3 class="rate-percentage"><input type="text" class="form-control" value="100"
-                                id="capital"></h3>
+                            <h3 class="rate-percentage"><input type="text" class="form-control" value="100" id="capital"
+                                onchange="capitalInicialChange();"></h3>
                           </div>
                           <div>
                             <p class="statistics-title">Capital actual $</p>
                             <h3 class="rate-percentage"><input type="text" class="form-control" value="100"
                                 id="capital_actual" disabled></h3>
                           </div>
-                          <div>
+                          <!--div>
                             <p class="statistics-title">Estrategia</p>
                             <h3 class="rate-percentage">
                               <select class="form-select" id="estrategia">
-                                <option value="-1">Conservadora</option>
-                                <option value="0">Normal</option>
-                                <option value="1">Agresiva</option>
+                                <option value="0">Conservadora</option>
+                                <option value="1">Normal</option>
+                                <option value="2">Agresiva</option>
                               </select>
                             </h3>
-                          </div>
+                          </div-->
                           <div>
                             <p class="statistics-title">Perturbacion $</p>
                             <h3 class="rate-percentage"><input type="text" class="form-control" value="0"
@@ -72,12 +73,6 @@
                           <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                               <h4 class="card-title card-title-dash">Cryptomonedas</h4>
-                              <div class="add-items d-flex mb-0">
-                                <!-- <input type="text" class="form-control todo-list-input" placeholder="What do you need to do today?"> -->
-                                <button
-                                  class="add btn btn-icons btn-rounded btn-primary todo-list-add-btn text-white me-0 pl-12p"><i
-                                    class="mdi mdi-plus" onclick="addCrypto();"></i></button>
-                              </div>
                             </div>
                             <div class="table-responsive pt-3">
                               <table class="table table-bordered">
@@ -87,44 +82,82 @@
                                     <th>Precio inicial</th>
                                     <th>Precio actual</th>
                                     <th>Variacion max (c/iteracion) %</th>
-                                    <th>Inversion actual (%)</th>
+                                    <th>Inversion cantidad</th>
                                     <th>Inversion actual ($)</th>
-                                    <th>Acciones</th>
                                   </tr>
                                 </thead>
                                 <tbody id="tableCryptos">
                                   <tr id="crypto_row_0">
                                     <td><input type="text" class="form-control" value="USDT" id="crypto_nombre_0"
-                                        disabled></td>
-                                    <td><input type="text" class="form-control" value="1" id="crypto_precio_0" disabled>
+                                        disabled disabled></td>
+                                    <td><input type="text" class="form-control" value="1" id="crypto_precio_0"
+                                        onchange="actualizarCryptoValorActual(0)" disabled>
                                     </td>
-                                    <td><input type="text" class="form-control" value="" id="crypto_precio_actual_0"
-                                        disabled>
+                                    <td><input type="text" class="form-control" value="1" id="crypto_precio_actual_0"
+                                        onchange="actualizarCapitalActual();" disabled>
                                       <input type="text" class="form-control" value="" id="crypto_historial_0" hidden>
                                     </td>
                                     <td><input type="text" class="form-control" value="0" id="crypto_variacion_0"
                                         disabled></td>
-                                    <td><input type="text" class="form-control" value="100" id="crypto_inversion_porc_0"
-                                        disabled></td>
+                                    <td><input type="text" class="form-control" value="100"
+                                        id="crypto_inversion_cantidad_0" onchange="actualizarCapitalActual();" disabled>
+                                    </td>
                                     <td><input type="text" class="form-control" value="100"
                                         id="crypto_inversion_efectivo_0" disabled></td>
-                                    <td></td>
                                   </tr>
                                   <tr id="crypto_row_1">
-                                    <td><input type="text" class="form-control" value="Bitcoin" id="crypto_nombre_1">
-                                    </td>
-                                    <td><input type="text" class="form-control" value="60" id="crypto_precio_1"></td>
-                                    <td><input type="text" class="form-control" value="" id="crypto_precio_actual_1"
+                                    <td><input type="text" class="form-control" value="Bitcoin" id="crypto_nombre_1"
                                         disabled>
+                                    </td>
+                                    <td><input type="text" class="form-control" value="60" id="crypto_precio_1"
+                                        onchange="actualizarCryptoValorActual(1)"></td>
+                                    <td><input type="text" class="form-control" value="60" id="crypto_precio_actual_1"
+                                        onchange="actualizarCapitalActual();" disabled>
                                       <input type="text" class="form-control" value="" id="crypto_historial_1" hidden>
                                     </td>
-                                    <td><input type="text" class="form-control" value="0.5" id="crypto_variacion_1">
+                                    <td><input type="text" class="form-control" value="10" id="crypto_variacion_1">
                                     </td>
-                                    <td><input type="text" class="form-control" value="0" id="crypto_inversion_porc_1"
-                                        disabled></td>
+                                    <td><input type="text" class="form-control" value="0"
+                                        id="crypto_inversion_cantidad_1" onchange="actualizarCapitalActual();" disabled>
+                                    </td>
                                     <td><input type="text" class="form-control" value="0"
                                         id="crypto_inversion_efectivo_1" disabled></td>
-                                    <td></td>
+                                  </tr>
+                                  <tr id="crypto_row_2">
+                                    <td><input type="text" class="form-control" value="Pepe" id="crypto_nombre_2"
+                                        disabled>
+                                    </td>
+                                    <td><input type="text" class="form-control" value="0.51" id="crypto_precio_2"
+                                        onchange="actualizarCryptoValorActual(2)"></td>
+                                    <td><input type="text" class="form-control" value="0.51" id="crypto_precio_actual_2"
+                                        onchange="actualizarCapitalActual();" disabled>
+                                      <input type="text" class="form-control" value="" id="crypto_historial_2" hidden>
+                                    </td>
+                                    <td><input type="text" class="form-control" value="20" id="crypto_variacion_2">
+                                    </td>
+                                    <td><input type="text" class="form-control" value="0"
+                                        id="crypto_inversion_cantidad_2" onchange="actualizarCapitalActual();" disabled>
+                                    </td>
+                                    <td><input type="text" class="form-control" value="0"
+                                        id="crypto_inversion_efectivo_2" disabled></td>
+                                  </tr>
+                                  <tr id="crypto_row_3">
+                                    <td><input type="text" class="form-control" value="Doge" id="crypto_nombre_3"
+                                        disabled>
+                                    </td>
+                                    <td><input type="text" class="form-control" value="0.4" id="crypto_precio_3"
+                                        onchange="actualizarCryptoValorActual(3)"></td>
+                                    <td><input type="text" class="form-control" value="0.4" id="crypto_precio_actual_3"
+                                        onchange="actualizarCapitalActual();" disabled>
+                                      <input type="text" class="form-control" value="" id="crypto_historial_3" hidden>
+                                    </td>
+                                    <td><input type="text" class="form-control" value="30" id="crypto_variacion_3">
+                                    </td>
+                                    <td><input type="text" class="form-control" value="0"
+                                        id="crypto_inversion_cantidad_3" onchange="actualizarCapitalActual();" disabled>
+                                    </td>
+                                    <td><input type="text" class="form-control" value="0"
+                                        id="crypto_inversion_efectivo_3" disabled></td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -154,7 +187,7 @@
                               <div class="card-body">
                                 <div class="d-sm-flex justify-content-between align-items-start">
                                   <div>
-                                    <h4 class="card-title card-title-dash">Progreso</h4>
+                                    <h4 class="card-title card-title-dash">Capital</h4>
                                   </div>
                                   <div id="performanceLine-legend"></div>
                                 </div>
@@ -167,6 +200,119 @@
                         </div>
                       </div>
 
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12 d-flex flex-column">
+                        <div class="row flex-grow">
+                          <div class="col-12 col-lg-4 col-lg-12 grid-margin stretch-card">
+                            <div class="card card-rounded">
+                              <div class="card-body">
+                                <div class="d-sm-flex justify-content-between align-items-start">
+                                  <div>
+                                    <h4 class="card-title card-title-dash">Bitcoin</h4>
+                                  </div>
+                                  <div id="performanceLine1-legend">
+                                    <ul>
+                                      <li>
+                                        <span style="background-color: #52CDFF"></span>
+                                        Bitcoin
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                                <div class="chartjs-wrapper mt-4">
+                                  <canvas id="performanceLine1" width=""></canvas>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12 d-flex flex-column">
+                        <div class="row flex-grow">
+                          <div class="col-12 col-lg-4 col-lg-12 grid-margin stretch-card">
+                            <div class="card card-rounded">
+                              <div class="card-body">
+                                <div class="d-sm-flex justify-content-between align-items-start">
+                                  <div>
+                                    <h4 class="card-title card-title-dash">Pepe</h4>
+                                  </div>
+                                  <div id="performanceLine2-legend">
+                                    <ul>
+                                      <li>
+                                        <span style="background-color: #52CDFF"></span>
+                                        Pepe
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                                <div class="chartjs-wrapper mt-4">
+                                  <canvas id="performanceLine2" width=""></canvas>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12 d-flex flex-column">
+                        <div class="row flex-grow">
+                          <div class="col-12 col-lg-4 col-lg-12 grid-margin stretch-card">
+                            <div class="card card-rounded">
+                              <div class="card-body">
+                                <div class="d-sm-flex justify-content-between align-items-start">
+                                  <div>
+                                    <h4 class="card-title card-title-dash">Doge</h4>
+                                  </div>
+                                  <div id="performanceLine3-legend">
+                                    <ul>
+                                      <li>
+                                        <span style="background-color: #52CDFF"></span>
+                                        Doge
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                                <div class="chartjs-wrapper mt-4">
+                                  <canvas id="performanceLine3" width=""></canvas>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12 grid-margin stretch-card">
+                        <div class="card">
+                          <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <h4 class="card-title card-title-dash">Operaciones</h4>
+                            </div>
+                            <div class="table-responsive pt-3">
+                              <table class="table table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th>Timestamp</th>
+                                    <th>Tipo</th>
+                                    <th>Cryptomoneda</th>
+                                    <th>Precio</th>
+                                    <th>Cantidad</th>
+                                  </tr>
+                                </thead>
+                                <tbody id="tableOperacion">
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -200,270 +346,11 @@
   <!-- Custom js for this page-->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/regression/2.0.1/regression.min.js"
+    integrity="sha512-0k6FXllQktdobw8Nc8KQN2WtZrOuxpMn7jC2RKCF6LR7EdOhhrg3H5cBPxhs3CFzQVlO6ni1B9SDLUPhBs0Alg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="./script.js"></script>
   <!-- End custom js for this page-->
-  <script type="text/javascript">
-    let estado = false;
-    let perturbacion = 0;
-    let idsActuales = [];
-    let chart = undefined;
-
-    $(document).ready(function () {
-      setInterval(function () {
-        if (!estado) {
-          return
-        }
-
-
-
-        actualizarPrecios();
-
-        if (perturbacion > 0) {
-          $("#capital_actual").val(parseInt($("#capital_actual").val()) + perturbacion);
-          perturbacion = 0;
-        }
-
-        const estrategia = parseInt($("#estrategia").val()) * 2
-
-        const puntoSuma = parseFloat($("#capital_actual").val()) - parseFloat($("#capital").val())
-
-
-        $("#capital_actual").val(parseInt($("#capital_actual").val()) + 1);
-
-        chart.data.labels.push(generateLabel())
-        chart.data.datasets[0].data.push(parseInt($("#capital").val()))
-        chart.data.datasets[1].data.push(parseInt($("#capital_actual").val()))
-        chart.update()
-      }, 1000);
-    })
-
-    function generateLabel() {
-      var date = new Date;
-
-      var seconds = date.getSeconds();
-      var minutes = date.getMinutes();
-      var hour = date.getHours();
-
-      return hour + ":" + minutes + ":" + seconds
-    }
-
-    function actualizarPrecios() {
-      idsActuales = [];
-      $("#tableCryptos tr").each(function (idx, elem) {
-        const id = parseInt(elem.id.replace('crypto_row_', ""));
-
-        idsActuales.push(id);
-
-        let precioActual = parseFloat($(`#crypto_precio_actual_${id}`).val())
-
-        let variacion = parseFloat($(`#crypto_variacion_${id}`).val()) * precioActual / 100
-        variacion = Math.random() * (2 * variacion) - variacion
-
-        precioActual = (precioActual + Math.round(variacion * 100) / 100).toFixed(2)
-
-        $(`#crypto_precio_actual_${id}`).val(precioActual)
-
-        if ($(`#crypto_historial_${id}`).val() === "") {
-          $(`#crypto_historial_${id}`).val(precioActual)
-        } else {
-          const historial = $(`#crypto_historial_${id}`).val().split(",")
-          historial.push(precioActual)
-          $(`#crypto_historial_${id}`).val(historial.splice(-10).join(","))
-        }
-      })
-    }
-
-    function agregarPerturbacion(val) {
-      perturbacion = parseInt(val);
-      $("#perturbacion").val("0");
-    }
-
-    function iniciar() {
-      estado = true;
-
-      $('#iniciar').prop('disabled', true);
-      $('#frenar').prop('disabled', false);
-
-      $("#capital_actual").val(parseInt($("#capital").val()));
-
-      var graphGradient = document.getElementById("performanceLine").getContext('2d');
-      var saleGradientBg = graphGradient.createLinearGradient(5, 0, 5, 100);
-      saleGradientBg.addColorStop(0, 'rgba(26, 115, 232, 0.18)');
-      saleGradientBg.addColorStop(1, 'rgba(26, 115, 232, 0.02)');
-
-      var graphGradient2 = document.getElementById("performanceLine").getContext('2d');
-      var saleGradientBg2 = graphGradient2.createLinearGradient(100, 0, 50, 150);
-      saleGradientBg2.addColorStop(0, 'rgba(0, 208, 255, 0.19)');
-      saleGradientBg2.addColorStop(1, 'rgba(0, 208, 255, 0.03)');
-
-
-      chart.data.labels = [generateLabel()]
-      chart.data.datasets = [{
-        label: 'Capital nominal',
-        data: [parseInt($("#capital").val())],
-        backgroundColor: saleGradientBg,
-        borderColor: [
-          '#1F3BB3',
-        ],
-        borderWidth: 1.5,
-        fill: true, // 3: no fill
-        pointBorderWidth: 1,
-        pointRadius: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-        pointHoverRadius: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-        pointBackgroundColor: ['#1F3BB3)', '#1F3BB3', '#1F3BB3', '#1F3BB3', '#1F3BB3)', '#1F3BB3', '#1F3BB3', '#1F3BB3', '#1F3BB3)', '#1F3BB3', '#1F3BB3', '#1F3BB3', '#1F3BB3)'],
-        pointBorderColor: ['#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff',],
-      }]
-
-      chart.data.datasets.push({
-        label: 'Capital actual',
-        data: [parseInt($("#capital_actual").val())],
-        backgroundColor: saleGradientBg2,
-        borderColor: [
-          '#52CDFF',
-        ],
-        borderWidth: 1.5,
-        fill: true, // 3: no fill
-        pointBorderWidth: 1,
-        pointRadius: [0, 0, 0, 4, 0],
-        pointHoverRadius: [0, 0, 0, 2, 0],
-        pointBackgroundColor: ['#52CDFF)', '#52CDFF', '#52CDFF', '#52CDFF', '#52CDFF)', '#52CDFF', '#52CDFF', '#52CDFF', '#52CDFF)', '#52CDFF', '#52CDFF', '#52CDFF', '#52CDFF)'],
-        pointBorderColor: ['#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff',],
-      })
-
-      chart.update()
-
-
-
-      $("#tableCryptos tr").each(function (idx, elem) {
-        const id = parseInt(elem.id.replace('crypto_row_', ""));
-
-        $(`#crypto_precio_actual_${id}`).val(parseInt($(`#crypto_precio_${id}`).val()));
-      });
-    }
-
-    function frenar() {
-      estado = false;
-
-      $('#iniciar').prop('disabled', false);
-      $('#frenar').prop('disabled', true);
-    }
-
-    function addCrypto() {
-      const id = Date.now()
-      const tableElement = `
-          <tr id="crypto_row_${id}">
-            <td><input type="text" class="form-control" value="Bitcoin" id="crypto_nombre_${id}"></td>
-            <td><input type="text" class="form-control" value="60" id="crypto_precio_${id}"></td>
-            <td>
-              <input type="text" class="form-control" value="" id="crypto_precio_actual_${id}" disabled>
-              <input type="text" class="form-control" value="" id="crypto_historial_${id}" hidden>
-            </td>
-            <td><input type="text" class="form-control" value="0.5" id="crypto_variacion_${id}"></td>
-            <td><input type="text" class="form-control" value="0" id="crypto_inversion_porc_${id}" disabled></td>
-            <td><input type="text" class="form-control" value="0" id="crypto_inversion_efectivo_${id}" disabled></td>
-            <td>
-              <button class="add btn btn-icons btn-rounded btn-primary todo-list-add-btn text-white me-0 pl-12p" style="margin-bottom: 0px;" 
-                onclick="borrarCryptomoneda('crypto_row_${id}');">
-                <i class="mdi mdi-minus"></i>
-              </button>
-            </td>
-          </tr>`;
-      $("#tableCryptos").append(tableElement)
-    }
-
-    function borrarCryptomoneda(id) {
-      $(`#${id}`).remove();
-    }
-
-
-    (function ($) {
-      'use strict';
-      $(function () {
-        if ($("#performanceLine").length) {
-          const ctx = document.getElementById('performanceLine');
-
-          chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-              labels: [],
-              datasets: []
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              elements: {
-                line: {
-                  tension: 0.4,
-                }
-              },
-
-              scales: {
-                y: {
-                  border: {
-                    display: false
-                  },
-                  grid: {
-                    display: true,
-                    color: "#F0F0F0",
-                    drawBorder: false,
-                  },
-                  ticks: {
-                    beginAtZero: false,
-                    autoSkip: true,
-                    maxTicksLimit: 4,
-                    color: "#6B778C",
-                    font: {
-                      size: 10,
-                    }
-                  }
-                },
-                x: {
-                  border: {
-                    display: false
-                  },
-                  grid: {
-                    display: false,
-                    drawBorder: false,
-                  },
-                  ticks: {
-                    beginAtZero: false,
-                    autoSkip: true,
-                    maxTicksLimit: 7,
-                    color: "#6B778C",
-                    font: {
-                      size: 10,
-                    }
-                  }
-                }
-              },
-              plugins: {
-                legend: {
-                  display: false,
-                }
-              }
-            },
-            plugins: [{
-              afterDatasetUpdate: function (chart, args, options) {
-                const chartId = chart.canvas.id;
-                var i;
-                const legendId = `${chartId}-legend`;
-                const ul = document.createElement('ul');
-                for (i = 0; i < chart.data.datasets.length; i++) {
-                  ul.innerHTML += `
-                  <li>
-                    <span style="background-color: ${chart.data.datasets[i].borderColor}"></span>
-                    ${chart.data.datasets[i].label}
-                  </li>
-                `;
-                }
-                return document.getElementById(legendId).appendChild(ul);
-              }
-            }]
-          });
-        }
-
-      });
-    })(jQuery);
-  </script>
 </body>
 
 </html>
