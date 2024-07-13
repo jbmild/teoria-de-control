@@ -3,7 +3,6 @@ let perturbacion = 0;
 let chart = undefined;
 let chart1 = undefined;
 let chart2 = undefined;
-let chart3 = undefined;
 let iteracion = 0;
 
 /*
@@ -28,11 +27,12 @@ $(document).ready(function () {
       perturbacion = 0;
     }
 
+    actualizarPrecioCrypto(1);
+    actualizarPrecioCrypto(2);
     invertir();
-    actualizarPrecios();
     actualizarCapitalActual();
     actualizarGraficos();
-  }, 500);
+  }, 1000);
 });
 
 /*
@@ -43,37 +43,32 @@ function invertir() {
   const capitalInvertido = obtenerCapitalInvertido();
   const capital = parseFloat($("#capital").val());
 
-  let metadatos = obtenerMetadatosCryptos();
-  let metas = [];
+  let meta1 = obtenerMetadatosCryptos(1);
+  let meta2 = obtenerMetadatosCryptos(2);
 
   //Primera inversion   Math.abs(capitalActual - capital) > capital * 0.5
-  if (Math.abs(capitalActual - capitalInvertido) > capitalActual * 0.05) {
-    let metas = metadatos.filter((meta) => meta.cantidad > 0);
-    if (metas.length > 0) {
-      invertirCrypto(metas[metas.length - 1], capitalActual - capitalInvertido);
+  if (Math.abs(capitalActual - capitalInvertido) > capitalActual * 0.5) {
+    if (meta1.cantidad > 0) {
+      invertirCrypto(meta1, capitalActual - capitalInvertido);
     } else {
-      metas = obtenerMetadatosCryptosFiltradoYOrdenado();
-      if (metas.length === 0) {
-        alert("Error, no hay cryptomoneda util para comprar.");
-      }
-
-      invertirCrypto(metas[metas.length - 1], capitalActual - capitalInvertido);
+      invertirCrypto(meta2, capitalActual - capitalInvertido);
     }
   }
 
-  if (Math.abs(capitalActual - capital) > capital * 0.05) {
-    console.log("Mucha variacion");
-    metas = obtenerMetadatosCryptosFiltradoYOrdenado();
-    if (metas.length === 0) {
-      alert("Error, no hay cryptomoneda util para comprar.");
-    }
+  if (Math.abs(capitalActual - capital) > capital * 0.075) {
+    meta1 = obtenerMetadatosCryptos(1);
+    meta2 = obtenerMetadatosCryptos(2);
 
-    metadatos = obtenerMetadatosCryptos();
-    console.log(metadatos);
-    const inversionActual = metadatos.filter((meta) => meta.cantidad > 0);
-    if (inversionActual[0].id !== metas[metas.length - 1].id) {
-      desinvertirCrypto(inversionActual[0]);
-      invertirCrypto(metas[metas.length - 1], capitalActual);
+    if(capitalActual>=capital){
+      if (meta1.cantidad > 0) {
+        desinvertirCrypto(meta1);
+        invertirCrypto(meta2, capitalActual);
+      }
+    }else{
+      if (meta2.cantidad > 0) {
+        desinvertirCrypto(meta2);
+        invertirCrypto(meta1, capitalActual);;
+      }
     }
   }
 }
@@ -141,138 +136,78 @@ function obtenerCapitalInvertido() {
 /*
  * Cryptos
  */
-function obtenerMetadatosCryptosFiltradoYOrdenado() {
-  return (
-    obtenerMetadatosCryptos()
-      //.filter((meta) => meta.iteraciones >= 0)
-      .sort((a, b) => {
-        if (Math.abs(a.pendiente) < Math.abs(b.pendiente)) {
-          return -1;
-        }
-        if (Math.abs(a.pendiente) > Math.abs(b.pendiente)) {
-          return 1;
-        }
-        return 0;
-      })
-  );
-}
 
-function obtenerMetadatosCryptos() {
-  const capitalActual = parseFloat($("#capital_actual").val());
-  const capital = parseFloat($("#capital").val());
-  const variacionCapital = capitalActual - capital;
+function obtenerMetadatosCryptos(id) {
+  const nombre = $(`#crypto_nombre_${id}`).val();
+  const precioActual = parseFloat($(`#crypto_precio_actual_${id}`).val());
+  const historial = $(`#crypto_historial_${id}`).val();
+  const cantidad = parseFloat($(`#crypto_inversion_cantidad_${id}`).val());
 
-  let metadatos = [];
-  $("#tableCryptos tr").each(function (idx, elem) {
-    const id = parseFloat(elem.id.replace("crypto_row_", ""));
-    if (id === 0) {
-      return;
+  let pendiente = 0;
+  if (historial !== "") {
+    let index = 0;
+    const historialArr = $(`#crypto_historial_${id}`).val().split(",");
+    if (historialArr.length > 2) {
+      const values = historialArr.map((x) => {
+        index++;
+        return [index, parseFloat(x)];
+      });
+
+      const result = regression.linear(values);
+      pendiente = result.equation[0];
     }
+  }
 
-    const nombre = $(`#crypto_nombre_${id}`).val();
-    const precioActual = parseFloat($(`#crypto_precio_actual_${id}`).val());
-    const historial = $(`#crypto_historial_${id}`).val();
-    const variacion = parseFloat($(`#crypto_variacion_${id}`).val());
-    const cantidad = parseFloat($(`#crypto_inversion_cantidad_${id}`).val());
-
-    let pendiente = 0;
-    let ordenadaAlOrigen = 0;
-    let iteraciones = 100000000000;
-    let promedio = 0;
-    if (historial !== "") {
-      let index = 0;
-      const historialArr = $(`#crypto_historial_${id}`).val().split(",");
-      if (historialArr.length > 2) {
-        const values = historialArr.map((x) => {
-          index++;
-          return [index, parseFloat(x)];
-        });
-
-        const result = regression.linear(values);
-        pendiente = result.equation[0];
-        ordenadaAlOrigen = result.equation[1];
-
-        iteraciones = Math.ceil(variacionCapital / pendiente);
-
-        promedio =
-          historialArr.reduce((p, c) => p + c, 0) / historialArr.length;
-      }
-    }
-
-    metadatos.push({
-      id,
-      nombre,
-      precioActual,
-      pendiente,
-      ordenadaAlOrigen,
-      iteraciones,
-      promedio,
-      variacion,
-      cantidad,
-    });
-  });
-
-  return metadatos;
+  return {
+    id,
+    nombre,
+    precioActual,
+    pendiente,
+    cantidad,
+  };
 }
 
 /*
  * Valores
  */
 
-function actualizarPrecios() {
+function actualizarPrecioCrypto(id) {
   if (iteracion % 3 !== 0) {
     return;
   }
-  $("#tableCryptos tr").each(function (idx, elem) {
-    const id = parseFloat(elem.id.replace("crypto_row_", ""));
 
-    if(id === 0){   
-        return;
-    }
+  let precioActual = parseFloat($(`#crypto_precio_actual_${id}`).val());
+  precioActual += obtenerVariacionSegundId(id, precioActual);
+  precioActual = Math.round(precioActual * 100) / 100
+  console.log(precioActual)
 
-    let precioActual = parseFloat($(`#crypto_precio_actual_${id}`).val());
+  if ($(`#crypto_historial_${id}`).val() === "") {
+    $(`#crypto_historial_${id}`).val(precioActual);
+    return
+  }
 
-    let variacion =
-      (parseFloat($(`#crypto_variacion_${id}`).val()) * precioActual) / 100;
-    variacion = Math.random() * (2 * variacion) - variacion;
+  const historial = $(`#crypto_historial_${id}`)
+    .val()
+    .split(",")
+    .map((x) => parseFloat(x));
+  historial.push(precioActual);
+  $(`#crypto_historial_${id}`).val(historial.splice(-20).join(","));
 
-    if ($(`#crypto_historial_${id}`).val() === "") {
-      precioActual = precioActual + Math.round(variacion * 100) / 100;
+  $(`#crypto_precio_actual_${id}`).val(precioActual);
+}
 
-      $(`#crypto_historial_${id}`).val(precioActual);
-    } else {
-      const historial = $(`#crypto_historial_${id}`)
-        .val()
-        .split(",")
-        .map((x) => parseFloat(x));
-
-      if (historial.length < 2) {
-        precioActual = Math.round((precioActual + variacion) * 100) / 100;
-      } else {
-        const precioN1 = historial[historial.length - 1];
-        const precioN2 = historial[historial.length - 2];
-        let variacionH = precioN1 - precioN2;
-
-        const signoOriginal = variacionH / Math.abs(variacionH);
-        const signo = Math.random() < 0.2 ? -1 * signoOriginal : signoOriginal;
-
-        const promedio = historial.reduce((total, numero) => {
-            return total + numero;
-       }, 0) / historial.length;
-        const variacionPromedio = Math.abs(precioActual - promedio);
-
-        precioActual =
-          Math.round(
-            (precioActual + (signo * (variacionPromedio + variacion)) / 2) * 100
-          ) / 100;
-      }
-
-      historial.push(precioActual);
-      $(`#crypto_historial_${id}`).val(historial.splice(-20).join(","));
-    }
-
-    $(`#crypto_precio_actual_${id}`).val(precioActual);
-  });
+function obtenerVariacionSegundId(id, precioActual) {
+  switch (id) {
+    case 1:
+      return precioActual * (Math.floor(Math.random() * (2 - 1 + 1)) + 1) / 100
+      break;
+    case 2:
+      return - precioActual * (Math.floor(Math.random() * (1.5 - 1 + 1)) + 1) / 100
+      break;
+    default:
+      return 0;
+      break;
+  }
 }
 /*
  * Onclick functions
@@ -378,13 +313,6 @@ function graficarInicio() {
   var saleGradientBg4 = graphGradient4.createLinearGradient(100, 0, 50, 150);
   saleGradientBg4.addColorStop(0, "rgba(0, 208, 255, 0.19)");
   saleGradientBg4.addColorStop(1, "rgba(0, 208, 255, 0.03)");
-
-  var graphGradient5 = document
-    .getElementById("performanceLine3")
-    .getContext("2d");
-  var saleGradientBg5 = graphGradient5.createLinearGradient(100, 0, 50, 150);
-  saleGradientBg5.addColorStop(0, "rgba(0, 208, 255, 0.19)");
-  saleGradientBg5.addColorStop(1, "rgba(0, 208, 255, 0.03)");
 
   chart.data.labels = [generateLabel()];
   chart.data.datasets = [
@@ -518,7 +446,7 @@ function graficarInicio() {
 
   chart2.data.labels = [generateLabel()];
   chart2.data.datasets.push({
-    label: "Pepe",
+    label: "Doge",
     data: [parseFloat($("#crypto_precio_actual_2").val())],
     backgroundColor: saleGradientBg4,
     borderColor: ["#52CDFF"],
@@ -559,53 +487,9 @@ function graficarInicio() {
     ],
   });
 
-  chart3.data.labels = [generateLabel()];
-  chart3.data.datasets.push({
-    label: "Doge",
-    data: [parseFloat($("#crypto_precio_actual_3").val())],
-    backgroundColor: saleGradientBg5,
-    borderColor: ["#52CDFF"],
-    borderWidth: 1.5,
-    fill: true, // 3: no fill
-    pointBorderWidth: 1,
-    pointRadius: [0, 0, 0, 4, 0],
-    pointHoverRadius: [0, 0, 0, 2, 0],
-    pointBackgroundColor: [
-      "#52CDFF)",
-      "#52CDFF",
-      "#52CDFF",
-      "#52CDFF",
-      "#52CDFF)",
-      "#52CDFF",
-      "#52CDFF",
-      "#52CDFF",
-      "#52CDFF)",
-      "#52CDFF",
-      "#52CDFF",
-      "#52CDFF",
-      "#52CDFF)",
-    ],
-    pointBorderColor: [
-      "#fff",
-      "#fff",
-      "#fff",
-      "#fff",
-      "#fff",
-      "#fff",
-      "#fff",
-      "#fff",
-      "#fff",
-      "#fff",
-      "#fff",
-      "#fff",
-      "#fff",
-    ],
-  });
-
   chart.update();
   chart1.update();
   chart2.update();
-  chart3.update();
 }
 
 function actualizarGraficos() {
@@ -625,15 +509,9 @@ function actualizarGraficos() {
     parseFloat($("#crypto_precio_actual_2").val())
   );
 
-  chart3.data.labels.push(label);
-  chart3.data.datasets[0].data.push(
-    parseFloat($("#crypto_precio_actual_3").val())
-  );
-
   chart.update();
   chart1.update();
   chart2.update();
-  chart3.update();
 }
 
 (function ($) {
@@ -793,72 +671,6 @@ function actualizarGraficos() {
       const ctx = document.getElementById("performanceLine2");
 
       chart2 = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: [],
-          datasets: [],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          elements: {
-            line: {
-              tension: 0.4,
-            },
-          },
-
-          scales: {
-            y: {
-              border: {
-                display: false,
-              },
-              grid: {
-                display: true,
-                color: "#F0F0F0",
-                drawBorder: false,
-              },
-              ticks: {
-                beginAtZero: false,
-                autoSkip: true,
-                maxTicksLimit: 4,
-                color: "#6B778C",
-                font: {
-                  size: 10,
-                },
-              },
-            },
-            x: {
-              border: {
-                display: false,
-              },
-              grid: {
-                display: false,
-                drawBorder: false,
-              },
-              ticks: {
-                beginAtZero: false,
-                autoSkip: true,
-                maxTicksLimit: 7,
-                color: "#6B778C",
-                font: {
-                  size: 10,
-                },
-              },
-            },
-          },
-          plugins: {
-            legend: {
-              display: false,
-            },
-          },
-        },
-      });
-    }
-
-    if ($("#performanceLine3").length) {
-      const ctx = document.getElementById("performanceLine3");
-
-      chart3 = new Chart(ctx, {
         type: "line",
         data: {
           labels: [],

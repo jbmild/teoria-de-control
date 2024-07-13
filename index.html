@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -72,23 +71,22 @@
                         <div class="card">
                           <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
-                              <h4 class="card-title card-title-dash">Cryptomonedas</h4>
+                              <h4 class="card-title card-title-dash">Capital</h4>
                             </div>
                             <div class="table-responsive pt-3">
                               <table class="table table-bordered">
                                 <thead>
                                   <tr>
-                                    <th>Crypto</th>
+                                    <th>Moneda</th>
                                     <th>Precio inicial</th>
                                     <th>Precio actual</th>
-                                    <th>Variacion max (c/iteracion) %</th>
                                     <th>Inversion cantidad</th>
                                     <th>Inversion actual ($)</th>
                                   </tr>
                                 </thead>
                                 <tbody id="tableCryptos">
                                   <tr id="crypto_row_0">
-                                    <td><input type="text" class="form-control" value="USDT" id="crypto_nombre_0"
+                                    <td><input type="text" class="form-control" value="USD" id="crypto_nombre_0"
                                         disabled disabled></td>
                                     <td><input type="text" class="form-control" value="1" id="crypto_precio_0"
                                         onchange="actualizarCryptoValorActual(0)" disabled>
@@ -97,8 +95,6 @@
                                         onchange="actualizarCapitalActual();" disabled>
                                       <input type="text" class="form-control" value="" id="crypto_historial_0" hidden>
                                     </td>
-                                    <td><input type="text" class="form-control" value="0" id="crypto_variacion_0"
-                                        disabled></td>
                                     <td><input type="text" class="form-control" value="100"
                                         id="crypto_inversion_cantidad_0" onchange="actualizarCapitalActual();" disabled>
                                     </td>
@@ -109,13 +105,11 @@
                                     <td><input type="text" class="form-control" value="Bitcoin" id="crypto_nombre_1"
                                         disabled>
                                     </td>
-                                    <td><input type="text" class="form-control" value="60" id="crypto_precio_1"
+                                    <td><input type="text" class="form-control" value="6" id="crypto_precio_1"
                                         onchange="actualizarCryptoValorActual(1)"></td>
-                                    <td><input type="text" class="form-control" value="60" id="crypto_precio_actual_1"
+                                    <td><input type="text" class="form-control" value="6" id="crypto_precio_actual_1"
                                         onchange="actualizarCapitalActual();" disabled>
                                       <input type="text" class="form-control" value="" id="crypto_historial_1" hidden>
-                                    </td>
-                                    <td><input type="text" class="form-control" value="10" id="crypto_variacion_1">
                                     </td>
                                     <td><input type="text" class="form-control" value="0"
                                         id="crypto_inversion_cantidad_1" onchange="actualizarCapitalActual();" disabled>
@@ -124,40 +118,20 @@
                                         id="crypto_inversion_efectivo_1" disabled></td>
                                   </tr>
                                   <tr id="crypto_row_2">
-                                    <td><input type="text" class="form-control" value="Pepe" id="crypto_nombre_2"
+                                    <td><input type="text" class="form-control" value="Doge" id="crypto_nombre_2"
                                         disabled>
                                     </td>
-                                    <td><input type="text" class="form-control" value="0.51" id="crypto_precio_2"
+                                    <td><input type="text" class="form-control" value="5000" id="crypto_precio_2"
                                         onchange="actualizarCryptoValorActual(2)"></td>
-                                    <td><input type="text" class="form-control" value="0.51" id="crypto_precio_actual_2"
+                                    <td><input type="text" class="form-control" value="5000" id="crypto_precio_actual_2"
                                         onchange="actualizarCapitalActual();" disabled>
                                       <input type="text" class="form-control" value="" id="crypto_historial_2" hidden>
-                                    </td>
-                                    <td><input type="text" class="form-control" value="20" id="crypto_variacion_2">
                                     </td>
                                     <td><input type="text" class="form-control" value="0"
                                         id="crypto_inversion_cantidad_2" onchange="actualizarCapitalActual();" disabled>
                                     </td>
                                     <td><input type="text" class="form-control" value="0"
                                         id="crypto_inversion_efectivo_2" disabled></td>
-                                  </tr>
-                                  <tr id="crypto_row_3">
-                                    <td><input type="text" class="form-control" value="Doge" id="crypto_nombre_3"
-                                        disabled>
-                                    </td>
-                                    <td><input type="text" class="form-control" value="0.4" id="crypto_precio_3"
-                                        onchange="actualizarCryptoValorActual(3)"></td>
-                                    <td><input type="text" class="form-control" value="0.4" id="crypto_precio_actual_3"
-                                        onchange="actualizarCapitalActual();" disabled>
-                                      <input type="text" class="form-control" value="" id="crypto_historial_3" hidden>
-                                    </td>
-                                    <td><input type="text" class="form-control" value="30" id="crypto_variacion_3">
-                                    </td>
-                                    <td><input type="text" class="form-control" value="0"
-                                        id="crypto_inversion_cantidad_3" onchange="actualizarCapitalActual();" disabled>
-                                    </td>
-                                    <td><input type="text" class="form-control" value="0"
-                                        id="crypto_inversion_efectivo_3" disabled></td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -238,7 +212,7 @@
                               <div class="card-body">
                                 <div class="d-sm-flex justify-content-between align-items-start">
                                   <div>
-                                    <h4 class="card-title card-title-dash">Pepe</h4>
+                                    <h4 class="card-title card-title-dash">Doge</h4>
                                   </div>
                                   <div id="performanceLine2-legend">
                                     <ul>
@@ -251,35 +225,6 @@
                                 </div>
                                 <div class="chartjs-wrapper mt-4">
                                   <canvas id="performanceLine2" width=""></canvas>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                    <div class="row">
-                      <div class="col-lg-12 d-flex flex-column">
-                        <div class="row flex-grow">
-                          <div class="col-12 col-lg-4 col-lg-12 grid-margin stretch-card">
-                            <div class="card card-rounded">
-                              <div class="card-body">
-                                <div class="d-sm-flex justify-content-between align-items-start">
-                                  <div>
-                                    <h4 class="card-title card-title-dash">Doge</h4>
-                                  </div>
-                                  <div id="performanceLine3-legend">
-                                    <ul>
-                                      <li>
-                                        <span style="background-color: #52CDFF"></span>
-                                        Doge
-                                      </li>
-                                    </ul>
-                                  </div>
-                                </div>
-                                <div class="chartjs-wrapper mt-4">
-                                  <canvas id="performanceLine3" width=""></canvas>
                                 </div>
                               </div>
                             </div>
